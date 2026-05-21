@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#212529"> <title>Ometeotl - Lista de Compras</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" data-th-href="@{/css/estilos.css}">
+    <link rel="manifest" data-th-href="@{/manifest.json}">
+    
+    <link rel="icon" type="image/png" data-th-href="@{/logo.png}">
+    <link rel="apple-touch-icon" data-th-href="@{/logo.png}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="p-4">
+
+    <div class="container bg-white p-4 rounded shadow-sm contenedor-principal">
+        <div class="d-flex align-items-center mb-3 border-bottom pb-2">
+            <img data-th-src="@{/logo.png}" alt="Logo" style="width: 27px; height: 27px; object-fit: contain;">
+            <span class="sello-ometeotl">Ometeotl</span>
+        </div>
+        <h4 class="text-center mb-4 text-secondary">Control de Compras Diarias</h4>
+
+        <form data-th-action="@{/}" method="get" class="mb-4">
+            <div class="mb-3">
+                <label class="form-label font-monospace fw-bold">SELECCIÓN DE FECHA</label>
+                <div class="col-3 col-md-3">
+                    <input type="date" name="fecha" class="form-control border-secondary border-2 shadow-sm" 
+                           data-th-value="${fechaSeleccionada}" onchange="this.form.submit()">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label font-monospace fw-bold">LISTA DE PROVEEDORES DESPLEGABLE</label>
+                <div class="col-6 col-md-6">
+                    <select name="proveedor" class="form-select border-secondary border-2 shadow-sm" onchange="this.form.submit()">
+                        <option value="">-- Seleccione un Proveedor --</option>
+                        <option data-th-each="prov : ${todosLosProveedores}" 
+                                data-th-value="${prov}" 
+                                data-th-text="${prov}"
+                                data-th-selected="${prov == proveedorSeleccionado}"></option>
+                    </select>
+                </div>
+            </div>
+        </form>
+
+        <div data-th-if="${proveedorSeleccionado != null && !proveedorSeleccionado.isEmpty()}">
+            
+            <div class="alert alert-info py-2" data-th-text="'Estado del Pedido: ' + ${listaActual.estado}"></div>
+
+            <form data-th-if="${listaActual.estado == 'PENDIENTE'}" data-th-action="@{/producto/agregar}" method="post" class="mb-4">
+                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                
+                <div class="row g-2">
+                    <div class="col-8">
+                        <input type="text" name="nombreProducto" class="form-control border-secondary border-2 shadow-sm" placeholder="Escribir lo que se va a comprar...">
+                    </div>
+                    <div class="col-4 d-grid">
+                        <button type="submit" class="btn btn-dark fw-bold">AGREGAR</button>
+                    </div>
+                </div>
+            </form>
+
+            <table class="table table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-center columna-check">Acept.</th>
+                        <th class="text-center columna-check">Recib.</th>
+                        <th data-th-if="${listaActual.estado == 'PENDIENTE'}" class="text-center columna-accion">Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr data-th-each="prod : ${productos}">
+                        <td data-th-text="${prod.nombre}"></td>
+                        
+                        <td class="text-center">
+                            <form data-th-action="@{/producto/check/{id}(id=${prod.id})}" method="post">
+                                <input type="hidden" name="tipo" value="aceptado">
+                                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                                <input type="checkbox" class="form-check-input border-secondary shadow-sm checkbox-gigante" 
+                                       data-th-checked="${prod.pedidoAceptado}" 
+                                       data-th-disabled="${listaActual.estado != 'PENDIENTE'}"
+                                       onchange="this.form.submit()">
+                            </form>
+                        </td>
+
+                        <td class="text-center">
+                            <form data-th-action="@{/producto/check/{id}(id=${prod.id})}" method="post">
+                                <input type="hidden" name="tipo" value="recibido">
+                                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                                <input type="checkbox" class="form-check-input border-secondary shadow-sm checkbox-gigante" 
+                                       data-th-checked="${prod.recibidoFisico}" 
+                                       data-th-disabled="${listaActual.estado != 'PROCESADO'}"
+                                       onchange="this.form.submit()">
+                            </form>
+                        </td>
+
+                        <td data-th-if="${listaActual.estado == 'PENDIENTE'}" class="text-center">
+                            <form data-th-action="@{/producto/eliminar/{id}(id=${prod.id})}" method="post">
+                                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                                <button type="submit" class="btn btn-sm btn-danger">X</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr data-th-if="${#lists.isEmpty(productos)}">
+                        <td colspan="4" class="text-center text-muted py-3">La lista está vacía. Escriba un producto arriba.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="mt-4" data-th-if="${listaActual.id != null}">
+                <div class="row g-2">
+                    
+                    <div class="col-4 d-grid">
+                        <form data-th-action="@{/lista/regresar}" method="post" class="d-grid">
+                            <input type="hidden" name="listaId" data-th-value="${listaActual.id}">
+                            <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                            <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                            
+                            <button type="submit" class="btn btn-primary fw-bold text-white" 
+                                    data-th-disabled="${listaActual.estado == 'PENDIENTE'}">
+                                ← ATRÁS
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="col-8 d-grid">
+                        <form data-th-action="@{/lista/guardar}" method="post" class="d-grid">
+                            <input type="hidden" name="listaId" data-th-value="${listaActual.id}">
+                            <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                            <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                            
+                            <button type="submit" class="btn btn-success fw-bold" 
+                                    data-th-text="${listaActual.estado == 'PENDIENTE' ? 'AVANZAR A FASE 2' : (listaActual.estado == 'PROCESADO' ? 'FINALIZAR PEDIDO (F3)' : 'PEDIDO SELLADO HISTÓRICO')} "
+                                    data-th-disabled="${listaActual.estado == 'ENTREGADO'}"></button>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

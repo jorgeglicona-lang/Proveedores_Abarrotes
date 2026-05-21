@@ -1,0 +1,37 @@
+/* =========================================
+   Archivo de Estilos - Ometeotl Abarrotes
+   ========================================= */
+
+/* Fondo general de la aplicación */
+body {
+    background-color: #d1d5db;
+}
+
+/* Tamaño máximo del cuadro blanco central */
+.contenedor-principal {
+    max-width: 600px;
+}
+
+/* Anchuras fijas para las columnas de la tabla */
+.columna-check {
+    width: 70px;
+}
+
+.columna-accion {
+    width: 50px;
+}
+
+/* Modificadores para agrandar los cuadritos de verificación */
+.checkbox-gigante {
+    transform: scale(1.5);
+    cursor: pointer;
+}
+
+/* Sello Personal Ometeotl */
+.sello-ometeotl {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 700; /* 700 es el equivalente a BOLD */
+    color: #999999;
+    margin-left: 8px;
+}

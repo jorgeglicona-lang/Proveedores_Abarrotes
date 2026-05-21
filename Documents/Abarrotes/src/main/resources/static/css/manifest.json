@@ -1,0 +1,20 @@
+{
+  "name": "Ometeotl Compras Diarias",
+  "short_name": "Ometeotl",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#d1d5db",
+  "theme_color": "#212529",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
