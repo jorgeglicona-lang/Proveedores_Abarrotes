@@ -9,7 +9,7 @@ body {
 
 /* Tamaño máximo del cuadro blanco central */
 .contenedor-principal {
-    max-width: 600px;
+    max-width: 1100px; /* Ampliamos el ancho máximo para que quepan las dos columnas */
 }
 
 /* Anchuras fijas para las columnas de la tabla */
@@ -34,4 +34,10 @@ body {
     font-weight: 700; /* 700 es el equivalente a BOLD */
     color: #999999;
     margin-left: 8px;
+}
+
+/* Borde personalizado para encabezado */
+.borde-encabezado {
+    border-bottom: 1px solid #212529 !important; /* El !important asegura que nadie lo sobreescriba */
+    padding-bottom: 1rem !important;
 }
