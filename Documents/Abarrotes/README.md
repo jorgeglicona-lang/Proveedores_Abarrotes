@@ -16,8 +16,9 @@ Sistema administrativo diseñado para la gestión eficiente de pedidos diarios e
 
 ## 💻 Instrucciones de ejecución
 1. Asegúrese de tener instalado el JDK 21.
-2. Ejecute el archivo `Iniciar_Ometeotl.bat` en su terminal.
+2. Ejecute el archivo `Activador.bat` en su terminal.
 3. Acceda desde su navegador a `http://localhost:8085`.
+4. Para cerrar el servidor ejecute el archivo "BreakServer.bat"
 
 ## 📖 Guía de Usuario
 - **Selección:** Elija fecha y proveedor.
