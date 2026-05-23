@@ -18,7 +18,7 @@ body {
 }
 
 .columna-accion {
-    width: 50px;
+    width: 45px;
 }
 
 /* Modificadores para agrandar los cuadritos de verificación */
@@ -41,3 +41,7 @@ body {
     border-bottom: 1px solid #212529 !important; /* El !important asegura que nadie lo sobreescriba */
     padding-bottom: 1rem !important;
 }
+/*
+.botto-agregar{
+    color: #388d8dd9;
+}*/

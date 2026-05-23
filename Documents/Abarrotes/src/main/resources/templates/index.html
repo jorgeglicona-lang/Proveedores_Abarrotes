@@ -33,7 +33,7 @@
                         <form data-th-action="@{/}" method="get" class="mb-4">
                             <div class="mb-3">
                                 <label class="form-label font-monospace fw-bold">SELECCIÓN DE FECHA</label>
-                                <div class="col-5 col-md-3">
+                                <div class="col-7 col-md-3">
                                     <input type="date" name="fecha" class="form-control border-secondary border-2 shadow-sm" 
                                            data-th-value="${fechaSeleccionada}" onchange="this.form.submit()">
                                 </div>
@@ -55,77 +55,81 @@
 
                         <div data-th-if="${proveedorSeleccionado != null && !proveedorSeleccionado.isEmpty()}">
 
-                            <div class="alert alert-info py-2" data-th-text="'Estado del Pedido: ' + ${listaActual.estado}"></div>
+                            <div class="alert alert-info py-2" data-th-text="'Estado del Pedido: ' + ${listaActual.estado}">
+                            </div>
 
                             <form data-th-if="${listaActual.estado == 'PENDIENTE'}" data-th-action="@{/producto/agregar}" method="post" class="mb-4">
                                 <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
                                 <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
 
                                 <div class="row g-2">
-                                    <div class="col-8">
+                                    <div class="col-12 col-md-8">
                                         <input type="text" name="nombreProducto" class="form-control border-secondary border-2 shadow-sm" placeholder="Escribir lo que se va a comprar...">
                                     </div>
-                                    <div class="col-4 d-grid">
+
+                                    <div class="col-12 col-md-4 d-grid pb-5">
                                         <button type="submit" class="btn btn-dark fw-bold">AGREGAR</button>
                                     </div>
                                 </div>
                             </form>
 
-                            <table class="table table-bordered align-middle">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th class="text-center columna-check">Acept.</th>
-                                        <th class="text-center columna-check">Recib.</th>
-                                        <th data-th-if="${listaActual.estado == 'PENDIENTE'}" class="text-center columna-accion">Acción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr data-th-each="prod : ${productos}">
-                                        <td data-th-text="${prod.nombre}"></td>
+                            <div class="table-responsive">
+                                <table class="table text-center align-middle mb-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th class="text-center columna-check">Aceptar</th>
+                                            <th class="text-center columna-check">Recibir</th>
+                                            <th data-th-if="${listaActual.estado == 'PENDIENTE'}" class="text-center columna-accion">Acción</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr data-th-each="prod : ${productos}">
+                                            <td data-th-text="${prod.nombre}"></td>
 
-                                        <td class="text-center">
-                                            <form data-th-action="@{/producto/check/{id}(id=${prod.id})}" method="post">
-                                                <input type="hidden" name="tipo" value="aceptado">
-                                                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
-                                                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
-                                                <input type="checkbox" class="form-check-input border-secondary shadow-sm checkbox-gigante" 
-                                                       data-th-checked="${prod.pedidoAceptado}" 
-                                                       data-th-disabled="${listaActual.estado != 'PENDIENTE'}"
-                                                       onchange="this.form.submit()">
-                                            </form>
-                                        </td>
+                                            <td class="text-center">
+                                                <form data-th-action="@{/producto/check/{id}(id=${prod.id})}" method="post">
+                                                    <input type="hidden" name="tipo" value="aceptado">
+                                                    <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                                                    <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                                                    <input type="checkbox" class="form-check-input border-secondary shadow-sm checkbox-gigante" 
+                                                           data-th-checked="${prod.pedidoAceptado}" 
+                                                           data-th-disabled="${listaActual.estado != 'PENDIENTE'}"
+                                                           onchange="this.form.submit()">
+                                                </form>
+                                            </td>
 
-                                        <td class="text-center">
-                                            <form data-th-action="@{/producto/check/{id}(id=${prod.id})}" method="post">
-                                                <input type="hidden" name="tipo" value="recibido">
-                                                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
-                                                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
-                                                <input type="checkbox" class="form-check-input border-secondary shadow-sm checkbox-gigante" 
-                                                       data-th-checked="${prod.recibidoFisico}" 
-                                                       data-th-disabled="${listaActual.estado != 'PROCESADO'}"
-                                                       onchange="this.form.submit()">
-                                            </form>
-                                        </td>
+                                            <td class="text-center">
+                                                <form data-th-action="@{/producto/check/{id}(id=${prod.id})}" method="post">
+                                                    <input type="hidden" name="tipo" value="recibido">
+                                                    <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                                                    <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                                                    <input type="checkbox" class="form-check-input border-secondary shadow-sm checkbox-gigante" 
+                                                           data-th-checked="${prod.recibidoFisico}" 
+                                                           data-th-disabled="${listaActual.estado != 'PROCESADO'}"
+                                                           onchange="this.form.submit()">
+                                                </form>
+                                            </td>
 
-                                        <td data-th-if="${listaActual.estado == 'PENDIENTE'}" class="text-center">
-                                            <form data-th-action="@{/producto/eliminar/{id}(id=${prod.id})}" method="post">
-                                                <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
-                                                <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
-                                                <button type="submit" class="btn btn-sm btn-danger">X</button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                    <tr data-th-if="${#lists.isEmpty(productos)}">
-                                        <td colspan="4" class="text-center text-muted py-3">La lista está vacía. Escriba un producto arriba.</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                            <td data-th-if="${listaActual.estado == 'PENDIENTE'}" class="text-center">
+                                                <form data-th-action="@{/producto/eliminar/{id}(id=${prod.id})}" method="post">
+                                                    <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
+                                                    <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
+                                                    <button type="submit" class="btn btn-sm btn-danger">X</button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                        <tr data-th-if="${#lists.isEmpty(productos)}">
+                                            <td colspan="4" class="text-center text-muted py-3">La lista está vacía. Escriba un producto arriba.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
 
                             <div class="mt-4" data-th-if="${listaActual.id != null}">
                                 <div class="row g-2">
 
-                                    <div class="col-4 d-grid">
+                                    <div class="col-12 col-md-4 d-grid">
                                         <form data-th-action="@{/lista/regresar}" method="post" class="d-grid">
                                             <input type="hidden" name="listaId" data-th-value="${listaActual.id}">
                                             <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
@@ -138,15 +142,16 @@
                                         </form>
                                     </div>
 
-                                    <div class="col-8 d-grid">
+                                    <div class="col-12 col-md-8 d-grid">
                                         <form data-th-action="@{/lista/guardar}" method="post" class="d-grid">
                                             <input type="hidden" name="listaId" data-th-value="${listaActual.id}">
                                             <input type="hidden" name="fecha" data-th-value="${fechaSeleccionada}">
                                             <input type="hidden" name="proveedor" data-th-value="${proveedorSeleccionado}">
 
-                                            <button type="submit" class="btn btn-success fw-bold" 
+                                            <button type="submit" class="btn btn-success fw-bold py-3 py-md-1" 
                                                     data-th-text="${listaActual.estado == 'PENDIENTE' ? 'AVANZAR A FASE 2' : (listaActual.estado == 'PROCESADO' ? 'FINALIZAR PEDIDO (F3)' : 'PEDIDO SELLADO HISTÓRICO')} "
-                                                    data-th-disabled="${listaActual.estado == 'ENTREGADO'}"></button>
+                                                    data-th-disabled="${listaActual.estado == 'ENTREGADO'}">    
+                                            </button>
                                         </form>
                                     </div>
 
