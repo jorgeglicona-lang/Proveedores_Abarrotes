@@ -179,5 +179,11 @@
     </div>
     
     <script data-th-src="@{/js/bootstrap.min.js}"></script>
+    <script>
+    // Esto detecta cuando la página carga y enfoca el campo de texto automáticamente
+    window.onload = function() {
+        document.querySelector('input[name="nombreProducto"]').focus();
+    };
+</script>
 </body>
 </html>

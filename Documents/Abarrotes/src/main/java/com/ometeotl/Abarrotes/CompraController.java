@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -60,7 +60,8 @@ public class CompraController {
     @PostMapping("/lista/regresar")
     public String regresarFase(@RequestParam("listaId") Long listaId,
                                @RequestParam("fecha") String fechaStr,
-                               @RequestParam("proveedor") String proveedor) {
+                               @RequestParam("proveedor") String proveedor,
+                               RedirectAttributes redirectAttributes) {
         
         listaRepo.findById(listaId).ifPresent(lista -> {
             if ("PROCESADO".equals(lista.getEstado())) {
@@ -70,25 +71,27 @@ public class CompraController {
             }
             listaRepo.save(lista);
         });
-        return "redirect:/?fecha=" + fechaStr + "&proveedor=" + proveedor;
+
+        redirectAttributes.addAttribute("fecha", fechaStr);
+        redirectAttributes.addAttribute("proveedor", proveedor);
+        return "redirect:/";
     }
 
     // --- EL HORARIO DE LA TIENDA ---
-    // Aquí usted puede configurar qué proveedores vienen cada día
     private List<String> obtenerProveedoresPorDia(java.time.DayOfWeek dia) {
         return switch (dia) {
-            case MONDAY -> Arrays.asList("Rabbit", "Guna", "Orbit", "Pedeedree"); // Lunes
+            case MONDAY -> Arrays.asList("Rabbit", "Guna", "Orbit", "Pedigree","Marlboro"); // Lunes
             case TUESDAY -> Arrays.asList("Bimbo", "Lala", "Coca Cola", "Costeña", "Gamesa",
-                    "Prispas/Bocados", "Patos", "Farmacia", "Pepsi", "Sabritas", "Montana"); // Martes
+                    "Prispas Bocados", "Patos", "Farmacia", "Pepsi", "Sabritas", "Montana"); // Martes
             case WEDNESDAY -> Arrays.asList("El Comal/Tortilla", "Jarro", "Holanda", "Corona",
                     "Malboro", "Dog Chao"); // Miércoles
-            case THURSDAY -> Arrays.asList("Mixta/Croqueta", "Coca Cola", "Pepsi", "Jumex",
-                    "Lala", "Peñafielt", "Kellog's"); // Jueves
+            case THURSDAY -> Arrays.asList("Mixta Croqueta", "Coca Cola", "Pepsi", "Jumex",
+                    "Lala", "Peñafielt", "Kellogs"); // Jueves
             case FRIDAY -> Arrays.asList("Alpura", "Barcel", "Danone", "Fud/Sigma", "Ricolino",
                     "Gamesa", "Sabritas", "Bimbo", "Yakult", "New Mix"); // Viernes
             case SATURDAY -> Arrays.asList("Marinela", "Tia Rosa", "Jarro", "Danone",
                     "Clemente Jack", "Kinder", "Marlboro", "Pepsi"); // Sábado
-            case SUNDAY -> Arrays.asList(); // Domingo (Lista vacía si no hay entregas)
+            case SUNDAY -> Arrays.asList(); // Domingo
         };
     }
 
@@ -96,22 +99,25 @@ public class CompraController {
     @PostMapping("/producto/agregar")
     public String agregarProducto(@RequestParam("fecha") String fechaStr,
                                   @RequestParam("proveedor") String proveedor,
-                                  @RequestParam("nombreProducto") String nombreProducto) {
+                                  @RequestParam("nombreProducto") String nombreProducto,
+                                  RedirectAttributes redirectAttributes) {
         
         if (nombreProducto == null || nombreProducto.trim().isEmpty()) {
-            return "redirect:/?fecha=" + fechaStr + "&proveedor=" + proveedor;
+            redirectAttributes.addAttribute("fecha", fechaStr);
+            redirectAttributes.addAttribute("proveedor", proveedor);
+            return "redirect:/";
         }
 
         LocalDate fecha = LocalDate.parse(fechaStr);
-        // Validar u obtener la lista de la base de datos
         ListaCompra lista = listaRepo.findByFechaAndProveedor(fecha, proveedor)
                 .orElseGet(() -> listaRepo.save(new ListaCompra(fecha, proveedor)));
 
-        // Guardar el producto amarrado a esa lista
         ItemProducto nuevoProducto = new ItemProducto(nombreProducto, lista);
         productoRepo.save(nuevoProducto);
 
-        return "redirect:/?fecha=" + fechaStr + "&proveedor=" + proveedor;
+        redirectAttributes.addAttribute("fecha", fechaStr);
+        redirectAttributes.addAttribute("proveedor", proveedor);
+        return "redirect:/";
     }
 
     // 3. Cambiar el estado de los CHECKBOX (Fase 2 y Fase 3)
@@ -119,7 +125,8 @@ public class CompraController {
     public String cambiarCheck(@PathVariable("id") Long id, 
                                @RequestParam("tipo") String tipo,
                                @RequestParam("fecha") String fechaStr,
-                               @RequestParam("proveedor") String proveedor) {
+                               @RequestParam("proveedor") String proveedor,
+                               RedirectAttributes redirectAttributes) {
         
         productoRepo.findById(id).ifPresent(prod -> {
             if ("aceptado".equals(tipo)) {
@@ -129,33 +136,45 @@ public class CompraController {
             }
             productoRepo.save(prod);
         });
-        return "redirect:/?fecha=" + fechaStr + "&proveedor=" + proveedor;
+
+        redirectAttributes.addAttribute("fecha", fechaStr);
+        redirectAttributes.addAttribute("proveedor", proveedor);
+        return "redirect:/";
     }
 
     // 4. Acción del botón ELIMINAR producto de la lista
     @PostMapping("/producto/eliminar/{id}")
     public String eliminarProducto(@PathVariable("id") Long id,
                                    @RequestParam("fecha") String fechaStr,
-                                   @RequestParam("proveedor") String proveedor) {
+                                   @RequestParam("proveedor") String proveedor,
+                                   RedirectAttributes redirectAttributes) {
+        
         productoRepo.deleteById(id);
-        return "redirect:/?fecha=" + fechaStr + "&proveedor=" + proveedor;
+        
+        redirectAttributes.addAttribute("fecha", fechaStr);
+        redirectAttributes.addAttribute("proveedor", proveedor);
+        return "redirect:/";
     }
 
     // 5. Botón de GUARDAR LISTA (Cambia de fases según el estado)
     @PostMapping("/lista/guardar")
     public String guardarLista(@RequestParam("listaId") Long listaId,
                                @RequestParam("fecha") String fechaStr,
-                               @RequestParam("proveedor") String proveedor) {
+                               @RequestParam("proveedor") String proveedor,
+                               RedirectAttributes redirectAttributes) {
         
         listaRepo.findById(listaId).ifPresent(lista -> {
             if ("PENDIENTE".equals(lista.getEstado())) {
-                lista.setEstado("PROCESADO"); // Pasa de Fase 1 a Fase 2/3
+                lista.setEstado("PROCESADO"); 
             } else if ("PROCESADO".equals(lista.getEstado())) {
-                lista.setEstado("ENTREGADO"); // Sella la lista (Fase 4 Candado)
+                lista.setEstado("ENTREGADO"); 
             }
             listaRepo.save(lista);
         });
-        return "redirect:/?fecha=" + fechaStr + "&proveedor=" + proveedor;
+
+        redirectAttributes.addAttribute("fecha", fechaStr);
+        redirectAttributes.addAttribute("proveedor", proveedor);
+        return "redirect:/";
     }
     
 }
