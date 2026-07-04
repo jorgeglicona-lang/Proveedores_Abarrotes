@@ -1,3 +1,3 @@
 @echo off
-start javaw -jar Abarrotes-1.0.jar
+start javaw -jar Abarrotes-2.0.jar
 exit
