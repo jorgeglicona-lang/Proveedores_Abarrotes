@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Administrar Proveedores - Ometeotl</title>
+
+    <link rel="stylesheet" data-th-href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" data-th-href="@{/css/estilos.css}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+</head>
+<body class="p-4 bg-light">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="bg-white p-4 rounded shadow-sm border border-secondary">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="text-secondary mb-0 fw-bold">⚙️ Gestión de Proveedores</h4>
+                    <a data-th-href="@{/}" class="btn btn-outline-dark fw-bold">← Volver al Inicio</a>
+                </div>
+                <div class="bg-light p-3 border rounded shadow-sm mb-3">
+                    <form data-th-action="@{/proveedores}" method="get" class="d-flex align-items-center gap-2">
+                        <label class="fw-bold text-secondary text-nowrap mb-0">🔍 Filtrar por:</label>
+                        <select name="diaFiltro" class="form-select border-secondary fw-bold text-secondary" onchange="this.form.submit()">
+                            <option value="">-- Todos los días --</option>
+                            <option value="MONDAY" data-th-selected="${diaFiltro == 'MONDAY'}">Lunes</option>
+                            <option value="TUESDAY" data-th-selected="${diaFiltro == 'TUESDAY'}">Martes</option>
+                            <option value="WEDNESDAY" data-th-selected="${diaFiltro == 'WEDNESDAY'}">Miércoles</option>
+                            <option value="THURSDAY" data-th-selected="${diaFiltro == 'THURSDAY'}">Jueves</option>
+                            <option value="FRIDAY" data-th-selected="${diaFiltro == 'FRIDAY'}">Viernes</option>
+                            <option value="SATURDAY" data-th-selected="${diaFiltro == 'SATURDAY'}">Sábado</option>
+                            <option value="SUNDAY" data-th-selected="${diaFiltro == 'SUNDAY'}">Domingo</option>
+                        </select>
+                        <a data-th-href="@{/proveedores}" class="btn btn-outline-danger fw-bold" data-th-if="${diaFiltro != null and !diaFiltro.isEmpty()}">X</a>
+                    </form>
+                </div>
+                <form data-th-action="@{/proveedores/agregar}" method="post" class="mb-4 bg-light p-3 border rounded shadow-sm">
+                    <h6 class="fw-bold mb-3 font-monospace">AGREGAR NUEVO PROVEEDOR</h6>
+                    <div class="row g-2">
+                        <div class="col-12 col-md-5">
+                            <input type="text" name="nombre" class="form-control border-secondary" placeholder="Nombre (Ej: Sabritas)" required>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <select name="diaSemana" class="form-select border-secondary" required>
+                                <option value="">Día de visita...</option>
+                                <option value="MONDAY">Lunes</option>
+                                <option value="TUESDAY">Martes</option>
+                                <option value="WEDNESDAY">Miércoles</option>
+                                <option value="THURSDAY">Jueves</option>
+                                <option value="FRIDAY">Viernes</option>
+                                <option value="SATURDAY">Sábado</option>
+                                <option value="SUNDAY">Domingo</option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-3 d-grid">
+                            <button type="submit" class="btn btn-primary fw-bold">GUARDAR</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center mb-0 shadow-sm border">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Nombre del Proveedor</th>
+                            <th>Día Asignado</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr data-th-each="prov : ${proveedores}">
+                            <td data-th-text="${prov.nombre}" class="fw-bold"></td>
+
+                            <td data-th-text="${prov.diaSemana == 'MONDAY' ? 'Lunes' :
+                                                      (prov.diaSemana == 'TUESDAY' ? 'Martes' :
+                                                      (prov.diaSemana == 'WEDNESDAY' ? 'Miércoles' :
+                                                      (prov.diaSemana == 'THURSDAY' ? 'Jueves' :
+                                                      (prov.diaSemana == 'FRIDAY' ? 'Viernes' :
+                                                      (prov.diaSemana == 'SATURDAY' ? 'Sábado' : 'Domingo')))))}"></td>
+
+                            <td>
+                                <form data-th-action="@{/proveedores/eliminar/{id}(id=${prov.id})}" method="post">
+                                    <button type="submit" class="btn btn-sm btn-danger fw-bold" onclick="return confirm('¿Seguro que desea eliminar a este proveedor definitivamente?');">ELIMINAR</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr data-th-if="${#lists.isEmpty(proveedores)}">
+                            <td colspan="3" class="text-muted py-4">No hay proveedores para mostrar con este filtro.</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
