@@ -1,4 +1,4 @@
-package com.ometeotl.Abarrotes;
+package com.ometeotl.Abarrotes.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;

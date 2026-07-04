@@ -1,12 +1,17 @@
-package com.ometeotl.Abarrotes;
+package com.ometeotl.Abarrotes.controller;
 
+import com.ometeotl.Abarrotes.model.ItemProducto;
+import com.ometeotl.Abarrotes.model.ListaCompra;
+import com.ometeotl.Abarrotes.model.Proveedor;
+import com.ometeotl.Abarrotes.repository.ItemProductoRepository;
+import com.ometeotl.Abarrotes.repository.ListaCompraRepository;
+import com.ometeotl.Abarrotes.repository.ProveedorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 

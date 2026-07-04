@@ -1,5 +1,6 @@
-package com.ometeotl.Abarrotes;
+package com.ometeotl.Abarrotes.repository;
 
+import com.ometeotl.Abarrotes.model.Proveedor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import java.util.List;

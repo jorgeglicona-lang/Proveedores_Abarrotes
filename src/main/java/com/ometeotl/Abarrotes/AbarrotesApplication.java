@@ -1,5 +1,7 @@
 package com.ometeotl.Abarrotes;
 
+import com.ometeotl.Abarrotes.model.Proveedor;
+import com.ometeotl.Abarrotes.repository.ProveedorRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
